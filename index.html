@@ -1,486 +1,173 @@
-<!DOCTYPE html>
-<html lang="id" class="scroll-smooth">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>KKG Gugus IV Kalijaga - Website Resmi & Kalijaga Fest 2026</title>
-  
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            brand: {
-              50: '#eff6ff',
-              100: '#dbeafe',
-              500: '#3b82f6',
-              600: '#2563eb',
-              700: '#1d4ed8',
-              800: '#1e40af',
-              900: '#1e3a8a',
-            }
-          }
-        }
-      }
-    }
-  </script>
+<!-- Header Fest -->
+  <div class="text-center max-w-3xl mx-auto mb-12 reveal">
+    <span class="text-xs uppercase font-extrabold tracking-widest text-brand-600 dark:text-brand-400">Road to</span>
+    <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white mt-1 mb-2">KALIJAGA FESTIVAL 2026</h2>
+    <p class="text-sm sm:text-base font-black tracking-wide text-brand-700 dark:text-brand-300 uppercase mb-4">
+      &ldquo;MERDEKA BERKARYA, BERGERAK BERSAMA, BERDAYA SEPENUHNYA!&rdquo;
+    </p>
+    <p class="text-sm text-slate-600 dark:text-slate-400">
+      Puncak perayaan unjuk karya, perlombaan akademik dan seni, serta penganugerahan pendidik bertempat di <strong>SDN Penggung 1</strong> pada hari <strong>Rabu, 18 November 2026</strong>.
+    </p>
+  </div>
 
-  <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@latest"></script>
-
-  <!-- Google Fonts: Plus Jakarta Sans -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
-  <style>
-    body { font-family: 'Plus Jakarta Sans', sans-serif; }
-    .reveal {
-      opacity: 0;
-      transform: translateY(24px);
-      transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .reveal.active {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    .tab-content { display: none; }
-    .tab-content.active {
-      display: block;
-      animation: fadeIn 0.4s ease-out forwards;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  </style>
-</head>
-<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300 antialiased selection:bg-brand-500 selection:text-white">
-
-  <!-- Audio Synthesizer -->
-  <script>
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    function playBeep(freq = 600, duration = 0.06) {
-      if (audioCtx.state === 'suspended') audioCtx.resume();
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-      gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc.start();
-      osc.stop(audioCtx.currentTime + duration);
-    }
-  </script>
-
-  <!-- Header -->
-  <header class="sticky top-0 z-40 w-full backdrop-blur-md bg-white/90 dark:bg-slate-900/90 border-b border-slate-200 dark:border-slate-800 transition-colors">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-18 flex items-center justify-between py-3">
-      <a href="#beranda" onclick="playBeep(520)" class="flex items-center gap-3 group">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-brand-500/20 group-hover:scale-105 transition-transform">
-          <i data-lucide="book-open" class="w-5 h-5"></i>
-        </div>
-        <div>
-          <span class="block text-[10px] sm:text-xs uppercase tracking-widest font-semibold text-slate-500 dark:text-slate-400">Website Resmi</span>
-          <span class="text-sm sm:text-lg font-bold text-slate-900 dark:text-white leading-tight">KKG Gugus IV Kalijaga</span>
-        </div>
-      </a>
-      <div class="flex items-center gap-2 sm:gap-4">
-        <nav class="hidden md:flex items-center gap-6 text-sm font-semibold text-slate-600 dark:text-slate-300">
-          <a href="#beranda" onclick="playBeep(520)" class="hover:text-brand-600 dark:hover:text-brand-400 transition-colors">Beranda</a>
-          <a href="#survey-sas" onclick="playBeep(520)" class="text-brand-600 dark:text-brand-400 font-bold flex items-center gap-1.5"><i data-lucide="clipboard-check" class="w-4 h-4"></i> Pemetaan SAS</a>
-          <a href="#materi" onclick="playBeep(520)" class="hover:text-brand-600 dark:hover:text-brand-400 transition-colors">Bank Materi</a>
-          <a href="#fest" onclick="playBeep(520)" class="hover:text-brand-600 dark:hover:text-brand-400 transition-colors">Kalijaga Fest 2026</a>
-        </nav>
-        <button id="themeToggle" onclick="toggleTheme()" class="p-2 sm:p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-brand-400 transition-colors" title="Ubah Mode Tema">
-          <i data-lucide="sun" class="w-4 h-4 hidden dark:block"></i>
-          <i data-lucide="moon" class="w-4 h-4 block dark:hidden"></i>
-        </button>
+  <!-- Countdown -->
+  <div class="reveal max-w-xl mx-auto mb-10 p-6 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm text-center">
+    <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 block mb-4">Hitung Mundur</span>
+    <div class="grid grid-cols-4 gap-2 sm:gap-4">
+      <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-700/60">
+        <span id="days" class="text-2xl sm:text-3xl font-black text-brand-600 dark:text-brand-400 block">0</span>
+        <span class="text-[10px] sm:text-xs uppercase font-semibold text-slate-500">Hari</span>
+      </div>
+      <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-700/60">
+        <span id="hours" class="text-2xl sm:text-3xl font-black text-brand-600 dark:text-brand-400 block">0</span>
+        <span class="text-[10px] sm:text-xs uppercase font-semibold text-slate-500">Jam</span>
+      </div>
+      <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-700/60">
+        <span id="minutes" class="text-2xl sm:text-3xl font-black text-brand-600 dark:text-brand-400 block">0</span>
+        <span class="text-[10px] sm:text-xs uppercase font-semibold text-slate-500">Menit</span>
+      </div>
+      <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-700/60">
+        <span id="seconds" class="text-2xl sm:text-3xl font-black text-brand-600 dark:text-brand-400 block">0</span>
+        <span class="text-[10px] sm:text-xs uppercase font-semibold text-slate-500">Detik</span>
       </div>
     </div>
-  </header>
+  </div>
 
-  <!-- Hero Section -->
-  <section id="beranda" class="relative pt-12 pb-14 md:pt-20 md:pb-20 overflow-hidden">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 text-center reveal">
-      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-50 dark:bg-brand-950/70 border border-brand-200 dark:border-brand-800/60 text-brand-700 dark:text-brand-300 text-xs font-semibold tracking-wider mb-6">
-        <i data-lucide="shield-check" class="w-4 h-4"></i>
-        Pembina: Gugus IV Kalijaga Harjamukti Kota Cirebon
-      </div>
-      <h1 class="text-3xl sm:text-5xl md:text-6xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight md:leading-[1.15] mb-6">
-        Pusat Literasi, Kolaborasi, dan Inovasi Edukasi Guru
-      </h1>
-      <p class="text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto mb-8 leading-relaxed font-normal">
-        Wadah profesional bersama Kelompok Kerja Guru Gugus IV Kalijaga dalam menggerakkan implementasi kurikulum, penguatan kompetensi digital, dan standardisasi asesmen pendidik serta siswa.
-      </p>
-      <div class="flex flex-wrap justify-center items-center gap-3">
-        <a href="#survey-sas" onclick="playBeep(700)" class="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm shadow-lg shadow-brand-500/25 transition-all hover:scale-105">
-          <i data-lucide="file-edit" class="w-4 h-4"></i>
-          Isi Pemetaan Materi SAS
-        </a>
-        <a href="#materi" onclick="playBeep(520)" class="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:text-brand-600 dark:hover:text-brand-400 font-semibold text-sm shadow-sm transition-all hover:scale-105">
-          <i data-lucide="folder" class="w-4 h-4"></i>
-          Lihat Bank Materi
-        </a>
-      </div>
-    </div>
-  </section>
+  <!-- Info Juknis -->
+  <div class="text-center max-w-2xl mx-auto mb-6 reveal">
+    <p class="text-sm text-slate-600 dark:text-slate-400">Rincian syarat ketentuan, format naskah, dan petunjuk teknis lomba guru & siswa dapat diakses lengkap melalui dokumen Juknis di bawah ini.</p>
+  </div>
 
-  <!-- Seksi Khusus: Pemetaan Materi SAS Semester 1 -->
-  <section id="survey-sas" class="py-12 border-t border-slate-200 dark:border-slate-800 bg-gradient-to-b from-brand-50/50 to-transparent dark:from-slate-900/60 dark:to-transparent">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 reveal">
-      <div class="relative overflow-hidden rounded-3xl p-8 sm:p-10 bg-white dark:bg-slate-900 border border-brand-200 dark:border-brand-900/80 shadow-xl shadow-brand-500/5">
-        <div class="flex flex-col md:flex-row items-center justify-between gap-8">
-          <div class="space-y-3 text-center md:text-left">
-            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400 text-xs font-bold uppercase tracking-wider">
-              <i data-lucide="alert-triangle" class="w-3.5 h-3.5"></i>
-              Agenda Khusus Reviewer Asesmen
-            </span>
-            <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-              Pemetaan Materi (SAS 1)
-            </h2>
-            <p class="text-slate-600 dark:text-slate-300 text-sm sm:text-base leading-relaxed max-w-xl">
-              Bapak/Ibu Guru kelas mohon menginput materi/bab yang <strong>sudah diajarkan</strong>. Data ini menjadi acuan mutlak tim penulis dalam menyusun naskah soal agar tepat sasaran untuk semua sekolah.
-            </p>
-            <div class="flex items-center justify-center md:justify-start gap-4 pt-1 text-xs text-slate-500 dark:text-slate-400">
-              <span class="inline-flex items-center gap-1"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-500"></i> Kelas 1 - 6</span>
-              <span class="inline-flex items-center gap-1"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-500"></i> Alur Fleksibel</span>
-              <span class="inline-flex items-center gap-1"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-500"></i> Cepat & Ringkas</span>
-            </div>
-          </div>
-          <div class="shrink-0 w-full md:w-auto text-center">
-            <a href="https://forms.gle/xLnpkRZzP87LYiVU7" target="_blank" rel="noopener noreferrer" onclick="playBeep(700)" class="w-full md:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-2xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm sm:text-base shadow-lg shadow-brand-600/30 transition-all hover:scale-105">
-              <i data-lucide="external-link" class="w-5 h-5"></i>
-              Buka Formulir Pemetaan
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+  <!-- Action Buttons -->
+  <div class="reveal flex flex-wrap items-center justify-center gap-4 mb-8">
+    <a href="https://drive.google.com/drive/folders/1qh0w3eCz3kwze4aj_EqGBqX-lhMuZUxO?usp=sharing" target="_blank" rel="noopener noreferrer" onclick="playBeep(700)" class="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-xl bg-slate-900 hover:bg-black dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 font-bold text-sm shadow-md transition-all hover:scale-105">
+      <i data-lucide="file-text" class="w-4 h-4 text-brand-400 dark:text-brand-600"></i>
+      Unduh Petunjuk Teknis & Formulir Lomba
+    </a>
+    <a href="https://wa.me/6281770050352?text=Halo%20Panitia%20KKG%20Gugus%20IV%2C%20saya%20ingin%20bertanya%20seputar%20agenda%20dan%20Kalijaga%20Fest." target="_blank" rel="noopener noreferrer" onclick="playBeep(700)" class="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-md transition-all hover:scale-105">
+      <i data-lucide="phone" class="w-4 h-4"></i>
+      Hubungi Koordinator Lomba
+    </a>
+  </div>
 
-  <!-- 8 Sekolah Anggota -->
-  <section id="sekolah" class="py-10 border-y border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 reveal">
-      <div class="text-center mb-6">
-        <span class="text-xs uppercase font-bold tracking-widest text-slate-500 dark:text-slate-400">Daftar Sekolah</span>
-        <h2 class="text-lg sm:text-xl font-bold text-slate-900 dark:text-white mt-1">Gugus IV Kalijaga</h2>
-      </div>
-      <div class="flex flex-wrap justify-center gap-2.5 sm:gap-3">
-        <span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200"><i data-lucide="school" class="w-3.5 h-3.5 text-brand-500"></i> SDN Penggung 1</span>
-        <span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200"><i data-lucide="school" class="w-3.5 h-3.5 text-brand-500"></i> SDN Kalijaga Permai</span>
-        <span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200"><i data-lucide="school" class="w-3.5 h-3.5 text-brand-500"></i> SDN Kebon Pelok</span>
-        <span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200"><i data-lucide="school" class="w-3.5 h-3.5 text-brand-500"></i> SDN Taman Kalijaga Permai</span>
-        <span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200"><i data-lucide="school" class="w-3.5 h-3.5 text-brand-500"></i> SDN Pesantren</span>
-        <span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200"><i data-lucide="school" class="w-3.5 h-3.5 text-brand-500"></i> SDN Argasunya</span>
-        <span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200"><i data-lucide="school" class="w-3.5 h-3.5 text-brand-500"></i> SD CIS</span>
-        <span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200"><i data-lucide="school" class="w-3.5 h-3.5 text-brand-500"></i> SDIT Muhammadiyah</span>
-      </div>
-    </div>
-  </section>
+  <!-- Alert Notice Karya -->
+  <div class="reveal max-w-2xl mx-auto mb-16 p-4 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 flex items-start gap-3">
+    <i data-lucide="alert-circle" class="w-5 h-5 text-amber-600 dark:text-amber-500 shrink-0 mt-0.5"></i>
+    <p class="text-sm text-amber-800 dark:text-amber-200 font-medium">Catatan: Batas akhir pengumpulan karya Video Pembelajaran & Artikel Guru paling lambat Rabu, 11 November 2026 melalui koordinator lomba.</p>
+  </div>
 
-  <!-- Bank Materi -->
-  <section id="materi" class="py-16 md:py-20">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 reveal">
-      <div class="relative overflow-hidden rounded-3xl p-8 sm:p-12 bg-gradient-to-br from-brand-700 via-brand-800 to-indigo-900 text-white shadow-2xl">
-        <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
-        <div class="relative z-10 text-center sm:text-left sm:flex sm:items-center sm:justify-between gap-8">
-          <div>
-            <span class="inline-block px-3 py-1 rounded-md bg-white/15 text-white/90 text-xs font-semibold tracking-wider uppercase mb-3">Repositori Kegiatan</span>
-            <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight mb-3">Bank Materi & Perangkat Pembelajaran</h2>
-            <p class="text-brand-100 text-sm sm:text-base max-w-xl leading-relaxed">
-              Silakan klik tombol di samping untuk membuka repositori modul ajar, administrasi kelas, dan materi pelatihan.
-            </p>
-          </div>
-          <div class="mt-6 sm:mt-0 flex-shrink-0">
-            <a href="https://drive.google.com/drive/folders/1tT3oeSIYawMHs5-n3Yrxiun69wd9L6vE" target="_blank" rel="noopener noreferrer" onclick="playBeep(700)" class="inline-flex items-center gap-3 px-7 py-4 rounded-2xl bg-white text-brand-800 hover:bg-brand-50 font-bold text-sm sm:text-base shadow-lg hover:shadow-xl transition-all hover:scale-105">
-              <i data-lucide="cloud-download" class="w-5 h-5 text-brand-600"></i>
-              Buka Materi
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Kalijaga Festival & Agenda -->
-  <section id="fest" class="py-16 border-t border-slate-200 dark:border-slate-800 bg-slate-100/50 dark:bg-slate-900/40">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6">
+  <!-- Tab Linimasa -->
+  <div id="jadwal" class="reveal max-w-4xl mx-auto">
+    <div class="flex flex-col sm:flex-row justify-center items-center gap-3 mb-8 border-b border-slate-200 dark:border-slate-800 pb-4">
       
-      <!-- Header Fest -->
-      <div class="text-center max-w-3xl mx-auto mb-12 reveal">
-        <span class="text-xs uppercase font-extrabold tracking-widest text-brand-600 dark:text-brand-400">Road to</span>
-        <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white mt-1 mb-2">KALIJAGA FESTIVAL 2026</h2>
-        <p class="text-sm sm:text-base font-black tracking-wide text-brand-700 dark:text-brand-300 uppercase mb-4">
-          &ldquo;MERDEKA BERKARYA, BERGERAK BERSAMA, BERDAYA SEPENUHNYA!&rdquo;
-        </p>
-        <p class="text-sm text-slate-600 dark:text-slate-400">
-          Puncak perayaan unjuk karya, perlombaan akademik dan seni, serta penganugerahan pendidik bertempat di <strong>SDN Penggung 1</strong> pada hari <strong>Rabu, 18 November 2026</strong>.
-        </p>
-      </div>
-
-      <!-- Countdown -->
-      <div class="reveal max-w-xl mx-auto mb-10 p-6 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm text-center">
-        <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 block mb-4">Hitung Mundur</span>
-        <div class="grid grid-cols-4 gap-2 sm:gap-4">
-          <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-700/60">
-            <span id="days" class="text-2xl sm:text-3xl font-black text-brand-600 dark:text-brand-400 block">0</span>
-            <span class="text-[10px] sm:text-xs uppercase font-semibold text-slate-500">Hari</span>
-          </div>
-          <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-700/60">
-            <span id="hours" class="text-2xl sm:text-3xl font-black text-brand-600 dark:text-brand-400 block">0</span>
-            <span class="text-[10px] sm:text-xs uppercase font-semibold text-slate-500">Jam</span>
-          </div>
-          <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-700/60">
-            <span id="minutes" class="text-2xl sm:text-3xl font-black text-brand-600 dark:text-brand-400 block">0</span>
-            <span class="text-[10px] sm:text-xs uppercase font-semibold text-slate-500">Menit</span>
-          </div>
-          <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-700/60">
-            <span id="seconds" class="text-2xl sm:text-3xl font-black text-brand-600 dark:text-brand-400 block">0</span>
-            <span class="text-[10px] sm:text-xs uppercase font-semibold text-slate-500">Detik</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Info Juknis -->
-      <div class="text-center max-w-2xl mx-auto mb-6 reveal">
-        <p class="text-sm text-slate-600 dark:text-slate-400">Rincian syarat ketentuan, format naskah, dan petunjuk teknis lomba guru & siswa dapat diakses lengkap melalui dokumen Juknis di bawah ini.</p>
-      </div>
-
-      <!-- Action Buttons -->
-      <div class="reveal flex flex-wrap items-center justify-center gap-4 mb-8">
-        <a href="https://drive.google.com/drive/folders/1qh0w3eCz3kwze4aj_EqGBqX-lhMuZUxO?usp=sharing" target="_blank" rel="noopener noreferrer" onclick="playBeep(700)" class="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-xl bg-slate-900 hover:bg-black dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 font-bold text-sm shadow-md transition-all hover:scale-105">
-          <i data-lucide="file-text" class="w-4 h-4 text-brand-400 dark:text-brand-600"></i>
-          Unduh Petunjuk Teknis & Formulir Lomba
-        </a>
-        <a href="https://wa.me/6281770050352?text=Halo%20Panitia%20KKG%20Gugus%20IV%2C%20saya%20ingin%20bertanya%20seputar%20agenda%20dan%20Kalijaga%20Fest." target="_blank" rel="noopener noreferrer" onclick="playBeep(700)" class="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-md transition-all hover:scale-105">
-          <i data-lucide="phone" class="w-4 h-4"></i>
-          Hubungi Koordinator Lomba
-        </a>
-      </div>
-
-      <!-- Alert Notice Karya -->
-      <div class="reveal max-w-2xl mx-auto mb-16 p-4 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 flex items-start gap-3">
-        <i data-lucide="alert-circle" class="w-5 h-5 text-amber-600 dark:text-amber-500 shrink-0 mt-0.5"></i>
-        <p class="text-sm text-amber-800 dark:text-amber-200 font-medium">Catatan: Batas akhir pengumpulan karya Video Pembelajaran & Artikel Guru paling lambat Rabu, 11 November 2026 melalui koordinator lomba.</p>
-      </div>
-
-      <!-- Tab Linimasa -->
-      <div id="jadwal" class="reveal max-w-4xl mx-auto">
-        <div class="flex flex-col sm:flex-row justify-center items-center gap-3 mb-8 border-b border-slate-200 dark:border-slate-800 pb-4">
-          
-          <button onclick="switchTab('tab-fest', this)" class="tab-btn px-6 py-2.5 rounded-full text-sm font-bold bg-white dark:bg-slate-800 border-2 border-brand-500 text-brand-600 dark:text-brand-400 shadow-sm transition-all" data-target="tab-fest">
-            Road to Kalijaga Fest
-          </button>
-          
-          <button onclick="switchTab('tab-arsip', this)" class="tab-btn px-6 py-2.5 rounded-full text-sm font-semibold bg-transparent text-slate-500 dark:text-slate-400 border border-transparent hover:bg-slate-200 dark:hover:bg-slate-800 transition-all" data-target="tab-arsip">
-            Arsip Program 2026
-          </button>
-
-        </div>
-
-        <!-- Konten Tab 1: Road to Fest -->
-        <div id="tab-fest" class="tab-content active">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            
-            <div class="p-5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80">
-              <span class="inline-block px-2.5 py-1 rounded-md bg-blue-50 dark:bg-blue-950/60 text-brand-600 dark:text-brand-400 text-xs font-bold mb-2">Selasa, 29 September 2026</span>
-              <h4 class="font-bold text-slate-900 dark:text-white text-base">Workshop Peran Pengawas dalam Administrasi Kelas</h4>
-              <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">Pembekalan teknis administrasi pembelajaran guru.</p>
-            </div>
-            <div class="p-5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80">
-              <span class="inline-block px-2.5 py-1 rounded-md bg-blue-50 dark:bg-blue-950/60 text-brand-600 dark:text-brand-400 text-xs font-bold mb-2">Kamis, 1 Oktober 2026</span>
-              <h4 class="font-bold text-slate-900 dark:text-white text-base">Writing Class Online Guru Gugus IV</h4>
-              <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">Bimbingan penulisan naskah artikel ilmiah dan buku antologi.</p>
-            </div>
-            <div class="p-5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80">
-              <span class="inline-block px-2.5 py-1 rounded-md bg-blue-50 dark:bg-blue-950/60 text-brand-600 dark:text-brand-400 text-xs font-bold mb-2">Rabu, 7 Oktober 2026</span>
-              <h4 class="font-bold text-slate-900 dark:text-white text-base">Video Challenge</h4>
-              <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">Pelatihan dan pembuatan video inovatif.</p>
-            </div>
-            <div class="p-5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80">
-              <span class="inline-block px-2.5 py-1 rounded-md bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 text-xs font-bold mb-2">Minggu, 11 Oktober 2026</span>
-              <h4 class="font-bold text-slate-900 dark:text-white text-base">Lomba Mata Pelajaran Siswa</h4>
-              <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">Lomba mata pelajaran piala Wali Kota Cirebon.</p>
-            </div>
-            <div class="p-5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80">
-              <span class="inline-block px-2.5 py-1 rounded-md bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 text-xs font-bold mb-2">Rabu, 14 Oktober 2026</span>
-              <h4 class="font-bold text-slate-900 dark:text-white text-base">Fun Match Futsal Guru dan Tenaga Kependidikan</h4>
-              <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">Ajang silaturahmi olahraga persahabatan guru dan tenaga kependidikan.</p>
-            </div>
-            <div class="p-5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80">
-              <span class="inline-block px-2.5 py-1 rounded-md bg-blue-50 dark:bg-blue-950/60 text-brand-600 dark:text-brand-400 text-xs font-bold mb-2">Rabu, 21 Oktober 2026</span>
-              <h4 class="font-bold text-slate-900 dark:text-white text-base">Workshop Model Pembelajaran & Technical Meeting Lomba</h4>
-              <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">Pelatihan model pembelajaran inovatif.</p>
-            </div>
-            <div class="p-5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80">
-              <span class="inline-block px-2.5 py-1 rounded-md bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 text-xs font-bold mb-2">Rabu, 28 Oktober 2026</span>
-              <h4 class="font-bold text-slate-900 dark:text-white text-base">Kalijaga Night Session</h4>
-              <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">Sharing session, talk show dan live music at Ulon Cafe.</p>
-            </div>
-            <div class="p-5 rounded-2xl bg-brand-50/70 dark:bg-brand-950/40 border-2 border-brand-500/40">
-              <span class="inline-block px-2.5 py-1 rounded-md bg-brand-600 text-white text-xs font-bold mb-2">Rabu, 18 November 2026</span>
-              <h4 class="font-bold text-brand-900 dark:text-brand-100 text-base">Kalijaga Festival 2026</h4>
-              <p class="text-xs text-brand-800/80 dark:text-brand-200/80 mt-1">Pameran karya, final lomba guru & siswa, dan penganugrahan Guru.</p>
-            </div>
-
-          </div>
-        </div>
-
-        <!-- Konten Tab 2: Arsip Program -->
-        <div id="tab-arsip" class="tab-content">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            
-            <div class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800">
-              <div class="flex items-center justify-between mb-2">
-                <span class="inline-block px-2.5 py-1 rounded-md bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-xs font-bold">Sabtu, 24 Januari 2026</span>
-                <span class="inline-flex items-center gap-1 text-[10px] uppercase font-bold text-emerald-600 dark:text-emerald-400"><i data-lucide="check-circle" class="w-3 h-3"></i> Terlaksana</span>
-              </div>
-              <h4 class="font-bold text-slate-900 dark:text-white text-base">Pemanfaatan Papan Interaktif Digital (PID)</h4>
-              <p class="text-xs text-slate-600 dark:text-slate-400 mt-1"><i data-lucide="map-pin" class="w-3 h-3 inline mr-1"></i>SD CIS</p>
-            </div>
-
-            <div class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800">
-              <div class="flex items-center justify-between mb-2">
-                <span class="inline-block px-2.5 py-1 rounded-md bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-xs font-bold">Sabtu, 14 Februari 2026</span>
-                <span class="inline-flex items-center gap-1 text-[10px] uppercase font-bold text-emerald-600 dark:text-emerald-400"><i data-lucide="check-circle" class="w-3 h-3"></i> Terlaksana</span>
-              </div>
-              <h4 class="font-bold text-slate-900 dark:text-white text-base">Pembelajaran Koding & Kecerdasan Artifisial</h4>
-              <p class="text-xs text-slate-600 dark:text-slate-400 mt-1"><i data-lucide="map-pin" class="w-3 h-3 inline mr-1"></i>SDN Penggung 1</p>
-            </div>
-
-            <div class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800">
-              <div class="flex items-center justify-between mb-2">
-                <span class="inline-block px-2.5 py-1 rounded-md bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-xs font-bold">Sabtu, 11 April 2026</span>
-                <span class="inline-flex items-center gap-1 text-[10px] uppercase font-bold text-emerald-600 dark:text-emerald-400"><i data-lucide="check-circle" class="w-3 h-3"></i> Terlaksana</span>
-              </div>
-              <h4 class="font-bold text-slate-900 dark:text-white text-base">Halalbihalal & Penguatan Karakter Guru</h4>
-              <p class="text-xs text-slate-600 dark:text-slate-400 mt-1"><i data-lucide="map-pin" class="w-3 h-3 inline mr-1"></i>SDN Kebon Pelok</p>
-            </div>
-
-            <div class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800">
-              <div class="flex items-center justify-between mb-2">
-                <span class="inline-block px-2.5 py-1 rounded-md bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-xs font-bold">Sabtu, 16 Mei 2026</span>
-                <span class="inline-flex items-center gap-1 text-[10px] uppercase font-bold text-emerald-600 dark:text-emerald-400"><i data-lucide="check-circle" class="w-3 h-3"></i> Terlaksana</span>
-              </div>
-              <h4 class="font-bold text-slate-900 dark:text-white text-base">Pembuatan Media Pembelajaran Digital</h4>
-              <p class="text-xs text-slate-600 dark:text-slate-400 mt-1"><i data-lucide="map-pin" class="w-3 h-3 inline mr-1"></i>SDIT Muhammadiyah</p>
-            </div>
-
-          </div>
-        </div>
-      </div>
+      <button onclick="switchTab('tab-fest', this)" class="tab-btn px-6 py-2.5 rounded-full text-sm font-bold bg-white dark:bg-slate-800 border-2 border-brand-500 text-brand-600 dark:text-brand-400 shadow-sm transition-all" data-target="tab-fest">
+        Road to Kalijaga Fest
+      </button>
+      
+      <button onclick="switchTab('tab-arsip', this)" class="tab-btn px-6 py-2.5 rounded-full text-sm font-semibold bg-transparent text-slate-500 dark:text-slate-400 border border-transparent hover:bg-slate-200 dark:hover:bg-slate-800 transition-all" data-target="tab-arsip">
+        Arsip Program 2026
+      </button>
 
     </div>
-  </section>
 
-  <!-- Footer -->
-  <footer class="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 py-12 transition-colors">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6">
-      <div class="flex flex-col sm:flex-row items-center justify-between gap-6 pb-8 border-b border-slate-200 dark:border-slate-800">
-        <div>
-          <h4 class="text-base font-bold text-slate-900 dark:text-white">Kelompok Kerja Guru (KKG) Gugus IV Kalijaga</h4>
-          <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Kecamatan Harjamukti - Kota Cirebon</p>
+    <!-- Konten Tab 1: Road to Fest -->
+    <div id="tab-fest" class="tab-content active">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        
+        <div class="p-5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80">
+          <span class="inline-block px-2.5 py-1 rounded-md bg-blue-50 dark:bg-blue-950/60 text-brand-600 dark:text-brand-400 text-xs font-bold mb-2">Selasa, 29 September 2026</span>
+          <h4 class="font-bold text-slate-900 dark:text-white text-base">Workshop Peran Pengawas dalam Administrasi Kelas</h4>
+          <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">Pembekalan teknis administrasi pembelajaran guru.</p>
         </div>
-        <div class="flex items-center gap-4">
-          <a href="https://www.instagram.com/thegugus4_/" target="_blank" rel="noopener noreferrer" onclick="playBeep(520)" class="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold hover:text-pink-600 dark:hover:text-pink-400 transition-colors">
-            <i data-lucide="instagram" class="w-4 h-4 text-pink-500"></i>
-            @thegugus4_
-          </a>
-          <a href="mailto:hello@gugus4.com" onclick="playBeep(520)" class="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold hover:text-brand-600 dark:hover:text-brand-400 transition-colors">
-            <i data-lucide="mail" class="w-4 h-4 text-brand-500"></i>
-            hello@kkgkalijaga.com
+
+        <div class="p-5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 relative overflow-hidden">
+          <span class="inline-block px-2.5 py-1 rounded-md bg-blue-50 dark:bg-blue-950/60 text-brand-600 dark:text-brand-400 text-xs font-bold mb-2">Kamis, 1 Oktober 2026</span>
+          <h4 class="font-bold text-slate-900 dark:text-white text-base">Writing Class Online Guru Gugus IV</h4>
+          <p class="text-xs text-slate-600 dark:text-slate-400 mt-1 mb-3">Bimbingan penulisan naskah artikel ilmiah dan buku antologi.</p>
+          
+          <!-- Tombol Google Form Antologi Sisi Lain -->
+          <a href="https://forms.gle/p9T7NWdPCNrfofsZ9" target="_blank" rel="noopener noreferrer" onclick="playBeep(700)" class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-black dark:bg-slate-100 dark:hover:bg-white text-white dark:text-slate-900 font-bold text-xs shadow-sm transition-all hover:scale-105">
+            <i data-lucide="pen-tool" class="w-3.5 h-3.5 text-brand-400 dark:text-brand-600"></i>
+            Isi Formulir Antologi "Sisi Lain"
           </a>
         </div>
-      </div>
-      <div class="pt-6 text-center text-xs text-slate-500 dark:text-slate-400">
-        &copy; 2026 KKG Gugus IV Kalijaga. All rights reserved.
+
+        <div class="p-5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80">
+          <span class="inline-block px-2.5 py-1 rounded-md bg-blue-50 dark:bg-blue-950/60 text-brand-600 dark:text-brand-400 text-xs font-bold mb-2">Rabu, 7 Oktober 2026</span>
+          <h4 class="font-bold text-slate-900 dark:text-white text-base">Video Challenge</h4>
+          <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">Pelatihan dan pembuatan video inovatif.</p>
+        </div>
+        <div class="p-5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80">
+          <span class="inline-block px-2.5 py-1 rounded-md bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 text-xs font-bold mb-2">Minggu, 11 Oktober 2026</span>
+          <h4 class="font-bold text-slate-900 dark:text-white text-base">Lomba Mata Pelajaran Siswa</h4>
+          <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">Lomba mata pelajaran piala Wali Kota Cirebon.</p>
+        </div>
+        <div class="p-5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80">
+          <span class="inline-block px-2.5 py-1 rounded-md bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 text-xs font-bold mb-2">Rabu, 14 Oktober 2026</span>
+          <h4 class="font-bold text-slate-900 dark:text-white text-base">Fun Match Futsal Guru dan Tenaga Kependidikan</h4>
+          <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">Ajang silaturahmi olahraga persahabatan guru dan tenaga kependidikan.</p>
+        </div>
+        <div class="p-5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80">
+          <span class="inline-block px-2.5 py-1 rounded-md bg-blue-50 dark:bg-blue-950/60 text-brand-600 dark:text-brand-400 text-xs font-bold mb-2">Rabu, 21 Oktober 2026</span>
+          <h4 class="font-bold text-slate-900 dark:text-white text-base">Workshop Model Pembelajaran & Technical Meeting Lomba</h4>
+          <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">Pelatihan model pembelajaran inovatif.</p>
+        </div>
+        <div class="p-5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80">
+          <span class="inline-block px-2.5 py-1 rounded-md bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 text-xs font-bold mb-2">Rabu, 28 Oktober 2026</span>
+          <h4 class="font-bold text-slate-900 dark:text-white text-base">Kalijaga Night Session</h4>
+          <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">Sharing session, talk show dan live music at Ulon Cafe.</p>
+        </div>
+        <div class="p-5 rounded-2xl bg-brand-50/70 dark:bg-brand-950/40 border-2 border-brand-500/40">
+          <span class="inline-block px-2.5 py-1 rounded-md bg-brand-600 text-white text-xs font-bold mb-2">Rabu, 18 November 2026</span>
+          <h4 class="font-bold text-brand-900 dark:text-brand-100 text-base">Kalijaga Festival 2026</h4>
+          <p class="text-xs text-brand-800/80 dark:text-brand-200/80 mt-1">Pameran karya, final lomba guru & siswa, dan penganugrahan Guru.</p>
+        </div>
+
       </div>
     </div>
-  </footer>
 
-  <!-- Floating WA -->
-  <a href="https://wa.me/6281770050352?text=Halo%20Panitia%20KKG%20Gugus%20IV%2C%20saya%20ingin%20bertanya%20seputar%20agenda%20dan%20Kalijaga%20Fest." target="_blank" rel="noopener noreferrer" onclick="playBeep(800)" class="fixed bottom-6 right-6 z-50 flex items-center gap-2.5 px-4 py-3 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs sm:text-sm shadow-xl shadow-emerald-600/30 hover:shadow-emerald-600/50 transition-all hover:scale-105" title="Hubungi Panitia">
-    <i data-lucide="message-circle" class="w-5 h-5"></i>
-    <span>Tanya Panitia</span>
-  </a>
+    <!-- Konten Tab 2: Arsip Program -->
+    <div id="tab-arsip" class="tab-content">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        
+        <div class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800">
+          <div class="flex items-center justify-between mb-2">
+            <span class="inline-block px-2.5 py-1 rounded-md bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-xs font-bold">Sabtu, 24 Januari 2026</span>
+            <span class="inline-flex items-center gap-1 text-[10px] uppercase font-bold text-emerald-600 dark:text-emerald-400"><i data-lucide="check-circle" class="w-3 h-3"></i> Terlaksana</span>
+          </div>
+          <h4 class="font-bold text-slate-900 dark:text-white text-base">Pemanfaatan Papan Interaktif Digital (PID)</h4>
+          <p class="text-xs text-slate-600 dark:text-slate-400 mt-1"><i data-lucide="map-pin" class="w-3 h-3 inline mr-1"></i>SD CIS</p>
+        </div>
 
-  <!-- Scripts -->
-  <script>
-    lucide.createIcons();
+        <div class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800">
+          <div class="flex items-center justify-between mb-2">
+            <span class="inline-block px-2.5 py-1 rounded-md bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-xs font-bold">Sabtu, 14 Februari 2026</span>
+            <span class="inline-flex items-center gap-1 text-[10px] uppercase font-bold text-emerald-600 dark:text-emerald-400"><i data-lucide="check-circle" class="w-3 h-3"></i> Terlaksana</span>
+          </div>
+          <h4 class="font-bold text-slate-900 dark:text-white text-base">Pembelajaran Koding & Kecerdasan Artifisial</h4>
+          <p class="text-xs text-slate-600 dark:text-slate-400 mt-1"><i data-lucide="map-pin" class="w-3 h-3 inline mr-1"></i>SDN Penggung 1</p>
+        </div>
 
-    function toggleTheme() {
-      playBeep(750);
-      if (document.documentElement.classList.contains('dark')) {
-        document.documentElement.classList.remove('dark');
-        localStorage.setItem('theme', 'light');
-      } else {
-        document.documentElement.classList.add('dark');
-        localStorage.setItem('theme', 'dark');
-      }
-      lucide.createIcons();
-    }
+        <div class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800">
+          <div class="flex items-center justify-between mb-2">
+            <span class="inline-block px-2.5 py-1 rounded-md bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-xs font-bold">Sabtu, 11 April 2026</span>
+            <span class="inline-flex items-center gap-1 text-[10px] uppercase font-bold text-emerald-600 dark:text-emerald-400"><i data-lucide="check-circle" class="w-3 h-3"></i> Terlaksana</span>
+          </div>
+          <h4 class="font-bold text-slate-900 dark:text-white text-base">Halalbihalal & Penguatan Karakter Guru</h4>
+          <p class="text-xs text-slate-600 dark:text-slate-400 mt-1"><i data-lucide="map-pin" class="w-3 h-3 inline mr-1"></i>SDN Kebon Pelok</p>
+        </div>
 
-    if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
+        <div class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800">
+          <div class="flex items-center justify-between mb-2">
+            <span class="inline-block px-2.5 py-1 rounded-md bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-xs font-bold">Sabtu, 16 Mei 2026</span>
+            <span class="inline-flex items-center gap-1 text-[10px] uppercase font-bold text-emerald-600 dark:text-emerald-400"><i data-lucide="check-circle" class="w-3 h-3"></i> Terlaksana</span>
+          </div>
+          <h4 class="font-bold text-slate-900 dark:text-white text-base">Pembuatan Media Pembelajaran Digital</h4>
+          <p class="text-xs text-slate-600 dark:text-slate-400 mt-1"><i data-lucide="map-pin" class="w-3 h-3 inline mr-1"></i>SDIT Muhammadiyah</p>
+        </div>
 
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) entry.target.classList.add('active');
-      });
-    }, { threshold: 0.1 });
-    document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+      </div>
+    </div>
+  </div>
 
-    // Tab Switcher Logic
-    function switchTab(tabId, btnElement) {
-      playBeep(650);
-      
-      // Reset all buttons
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.remove('bg-white', 'dark:bg-slate-800', 'border-2', 'border-brand-500', 'text-brand-600', 'dark:text-brand-400', 'shadow-sm', 'font-bold');
-        btn.classList.add('bg-transparent', 'text-slate-500', 'dark:text-slate-400', 'border-transparent', 'font-semibold');
-      });
-      
-      // Activate clicked button
-      btnElement.classList.remove('bg-transparent', 'text-slate-500', 'dark:text-slate-400', 'border-transparent', 'font-semibold');
-      btnElement.classList.add('bg-white', 'dark:bg-slate-800', 'border-2', 'border-brand-500', 'text-brand-600', 'dark:text-brand-400', 'shadow-sm', 'font-bold');
-
-      // Hide all contents
-      document.querySelectorAll('.tab-content').forEach(content => {
-        content.classList.remove('active');
-      });
-
-      // Show target content
-      document.getElementById(tabId).classList.add('active');
-    }
-
-    // Countdown Timer
-    const eventDate = new Date("2026-11-18T08:00:00+07:00").getTime();
-    function updateCountdown() {
-      const now = new Date().getTime();
-      const distance = eventDate - now;
-      if (distance < 0) {
-        document.getElementById("days").innerText = "0";
-        document.getElementById("hours").innerText = "0";
-        document.getElementById("minutes").innerText = "0";
-        document.getElementById("seconds").innerText = "0";
-        return;
-      }
-      document.getElementById("days").innerText = Math.floor(distance / (1000 * 60 * 60 * 24));
-      document.getElementById("hours").innerText = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      document.getElementById("minutes").innerText = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-      document.getElementById("seconds").innerText = Math.floor((distance % (1000 * 60)) / 1000);
-    }
-    setInterval(updateCountdown, 1000);
-    updateCountdown();
-  </script>
-</body>
-</html>
+</div>
