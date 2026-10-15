@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fun Match Futsal - KKG Gugus IV Kalijaga</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#fff7ed',
+              100: '#ffedd5',
+              500: '#f97316',
+              600: '#ea580c',
+              700: '#c2410c',
+              800: '#9a3412',
+              900: '#7c2d12',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Firebase SDK Compat -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .btn-glow { box-shadow: 0 0 20px rgba(249, 115, 22, 0.4); }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased selection:bg-brand-500 selection:text-white">
+
+  <!-- Navigation Header -->
+  <header class="border-b border-slate-800 bg-slate-900/90 backdrop-blur sticky top-0 z-40">
+    <div class="max-w-md mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-brand-500 to-amber-600 flex items-center justify-center text-white shadow-lg shadow-brand-500/20 font-black text-sm tracking-wide">
+  KKG
+        </div>
+        <div>
+          <span class="block text-[10px] uppercase font-bold tracking-widest text-brand-500">Kalijaga Fest 2026</span>
+          <h1 class="text-sm font-extrabold text-white">Fun Match Futsal</h1>
+        </div>
+      </div>
+      <button onclick="toggleAdminModal()" class="text-xs font-semibold px-2.5 py-1.5 rounded-lg border border-slate-700 bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center gap-1">
+        <i data-lucide="shield" class="w-3.5 h-3.5 text-brand-500"></i>
+        <span>Admin</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main App View -->
+  <main class="flex-1 max-w-md w-full mx-auto p-4 space-y-6">
+
+    <!-- Tab Navigation (3 Tabs) -->
+    <div class="grid grid-cols-3 gap-1 bg-slate-900 p-1 rounded-xl border border-slate-800 text-[11px] font-bold">
+      <button id="tabRegBtn" onclick="switchTab('reg')" class="py-2.5 rounded-lg bg-brand-500 text-white transition-all flex items-center justify-center gap-1 shadow-md">
+        <i data-lucide="user-plus" class="w-3.5 h-3.5"></i> Register
+      </button>
+      <button id="tabTeamsBtn" onclick="switchTab('teams')" class="py-2.5 rounded-lg text-slate-400 hover:text-white transition-all flex items-center justify-center gap-1">
+        <i data-lucide="users" class="w-3.5 h-3.5"></i> Skuad Tim
+      </button>
+      <button id="tabDashBtn" onclick="switchTab('dash')" class="py-2.5 rounded-lg text-slate-400 hover:text-white transition-all flex items-center justify-center gap-1">
+        <i data-lucide="trophy" class="w-3.5 h-3.5"></i> Match & Bagan
+      </button>
+    </div>
+
+    <!-- VIEW 1: REGISTRASI & PENGOLAHAN TIM -->
+    <section id="viewReg" class="space-y-5">
+      <div class="bg-gradient-to-br from-slate-900 to-slate-900/80 border border-slate-800 p-5 rounded-2xl relative overflow-hidden">
+        <div class="absolute -right-6 -top-6 w-24 h-24 bg-brand-500/10 rounded-full blur-xl"></div>
+        <h2 class="text-lg font-bold text-white mb-1">Daftar & Acak Tim</h2>
+        <p class="text-xs text-slate-400">Setiap tim dibatasi maksimal 6-8 pemain amatir (5 Utama + Cadangan).</p>
+
+        <form id="regForm" onsubmit="handleRegistration(event)" class="mt-4 space-y-3.5">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Nama Lengkap / Panggilan</label>
+            <input type="text" id="inputName" required placeholder="Contoh: Pak Akhmad" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-brand-500 text-white placeholder-slate-600">
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Asal Sekolah</label>
+            <select id="inputSchool" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-brand-500 text-white">
+              <option value="" disabled selected>-- Pilih Sekolah --</option>
+              <option value="SDN Kalijaga Permai">SDN Kalijaga Permai</option>
+              <option value="SDN Taman Kalijaga Permai">SDN Taman Kalijaga Permai</option>
+              <option value="SDN Penggung 1">SDN Penggung 1</option>
+              <option value="SDN Kebon Pelok">SDN Kebon Pelok</option>
+              <option value="SDN Pesantren">SDN Pesantren</option>
+              <option value="SDN Argasunya">SDN Argasunya</option>
+              <option value="SD CIS">SD CIS</option>
+              <option value="SDIT Muhammadiyah">SDIT Muhammadiyah</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Kategori (Jenis Kelamin)</label>
+            <div class="grid grid-cols-2 gap-2">
+              <label class="flex items-center justify-center gap-2 p-2.5 border border-slate-800 rounded-xl cursor-pointer bg-slate-950 has-[:checked]:border-brand-500 has-[:checked]:bg-brand-500/10 text-xs font-semibold text-slate-300">
+                <input type="radio" name="gender" value="Putra" required class="accent-brand-500 hidden">
+                <span>Pria (Putra)</span>
+              </label>
+              <label class="flex items-center justify-center gap-2 p-2.5 border border-slate-800 rounded-xl cursor-pointer bg-slate-950 has-[:checked]:border-brand-500 has-[:checked]:bg-brand-500/10 text-xs font-semibold text-slate-300">
+                <input type="radio" name="gender" value="Putri" required class="accent-brand-500 hidden">
+                <span>Wanita (Putri)</span>
+              </label>
+            </div>
+          </div>
+
+          <button type="submit" class="w-full py-3.5 px-4 bg-gradient-to-r from-brand-500 to-amber-600 hover:from-brand-600 hover:to-amber-700 text-white font-extrabold text-sm rounded-xl transition-all shadow-lg shadow-brand-500/20 btn-glow flex items-center justify-center gap-2 mt-2">
+            <span>SIAP BERSENANG-SENANG</span>
+            <i data-lucide="sparkles" class="w-4 h-4"></i>
+          </button>
+        </form>
+      </div>
+
+      <!-- Result Card Container -->
+      <div id="resultCard" class="hidden bg-slate-900 border-2 border-brand-500/50 p-5 rounded-2xl text-center space-y-3 relative">
+        <div class="text-xs font-bold text-brand-500 uppercase tracking-wider">Hasil Pengocokan Tim</div>
+        <h3 id="resPlayerName" class="text-xl font-black text-white">---</h3>
+        <p id="resPlayerMeta" class="text-xs text-slate-400">---</p>
+        
+        <div class="py-4 px-3 bg-slate-950 border border-slate-800 rounded-xl">
+          <span class="block text-[10px] text-slate-500 uppercase tracking-widest font-bold">Anda Bergabung Di</span>
+          <div id="resTeamName" class="text-2xl font-black text-amber-400 mt-1">TIM A</div>
+        </div>
+
+        <div class="pt-2 flex flex-col gap-2">
+          <button onclick="switchTab('teams')" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-xs font-bold text-brand-400 rounded-xl flex items-center justify-center gap-1.5">
+            <i data-lucide="users" class="w-3.5 h-3.5"></i> Lihat Skuad Anggota Tim
+          </button>
+          <button onclick="resetFormView()" class="text-xs text-slate-400 underline hover:text-slate-200">Daftarkan Peserta Lain</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 2: SKUAD & ANGGOTA TIM (DIPISAH PUTRA & PUTRI) -->
+    <section id="viewTeams" class="hidden space-y-5">
+      <div class="flex items-center justify-between">
+        <h2 class="text-sm font-extrabold text-white flex items-center gap-1.5">
+          <i data-lucide="users" class="w-4 h-4 text-brand-500"></i> Skuad Tim (Maks 8/Tim)
+        </h2>
+        <span id="totalPlayerBadge" class="text-[10px] font-bold px-2 py-1 bg-brand-500/10 text-brand-400 rounded-lg border border-brand-500/20">0 Peserta</span>
+      </div>
+
+      <!-- Category Filter -->
+      <div class="grid grid-cols-2 gap-1 bg-slate-900 p-1 rounded-xl border border-slate-800 text-xs font-bold">
+        <button id="catPutraBtn" onclick="filterCategory('Putra')" class="py-2 rounded-lg bg-blue-500/20 text-blue-400 border border-blue-500/30">Putra (Pria)</button>
+        <button id="catPutriBtn" onclick="filterCategory('Putri')" class="py-2 rounded-lg text-slate-400 hover:text-white">Putri (Wanita)</button>
+      </div>
+
+      <div id="teamsContainer" class="space-y-4">
+        <!-- Rendered via JavaScript -->
+      </div>
+    </section>
+
+    <!-- VIEW 3: MATCH & BAGAN TURNAMEN (DIPISAH PUTRA/PUTRI + LIVE SCORE AKTIF) -->
+    <section id="viewDash" class="hidden space-y-5">
+      
+      <!-- Live Score Board (HANYA MUNCUL JIKA KATEGORI MATCH LAGI AKTIF/LIVE) -->
+      <div id="liveScoreBoard" class="bg-slate-900 border-2 border-brand-500/50 p-4 rounded-2xl space-y-3 shadow-xl">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+          <span class="inline-flex items-center gap-1.5 text-[11px] font-bold text-red-500">
+            <span class="w-2 h-2 rounded-full bg-red-500 animate-ping"></span> MATCH BERJALAN
+          </span>
+          <span id="matchRoundTitle" class="text-[11px] font-bold text-amber-400 uppercase tracking-wider">PUTRA - SEMI FINAL 1</span>
+        </div>
+
+        <div class="flex items-center justify-between text-center py-2">
+          <div class="flex-1">
+            <h4 id="team1Display" class="font-black text-sm text-white">Tim A</h4>
+            <span class="text-[10px] text-slate-500">Gugus IV</span>
+          </div>
+          <div class="px-3.5 py-2 bg-slate-950 border border-slate-800 rounded-xl flex items-center gap-2">
+            <span id="score1Display" class="text-3xl font-black text-brand-500">0</span>
+            <span class="text-xs text-slate-600 font-bold">-</span>
+            <span id="score2Display" class="text-3xl font-black text-brand-500">0</span>
+          </div>
+          <div class="flex-1">
+            <h4 id="team2Display" class="font-black text-sm text-white">Tim B</h4>
+            <span class="text-[10px] text-slate-500">Gugus IV</span>
+          </div>
+        </div>
+
+        <!-- Goal Log -->
+        <div id="goalLog" class="text-[11px] text-slate-400 border-t border-slate-800/60 pt-2 space-y-1 max-h-20 overflow-y-auto">
+          <p class="text-center italic text-slate-600">Belum ada gol tercipta</p>
+        </div>
+      </div>
+
+      <!-- Banner jika tidak ada match berlangsung -->
+      <div id="noMatchBanner" class="bg-slate-900/60 border border-slate-800 p-4 rounded-2xl text-center space-y-1">
+        <p class="text-xs font-bold text-slate-400">⏸️ Belum Ada Pertandingan Berlangsung</p>
+        <p class="text-[10px] text-slate-600">Admin akan memulai pertandingan secara live dari panel kontrol.</p>
+      </div>
+
+      <!-- BAGAN TURNAMEN PUTRA -->
+      <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl space-y-3">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-blue-400 flex items-center gap-1.5">
+          <i data-lucide="trophy" class="w-3.5 h-3.5 text-blue-400"></i> Bagan Turnamen Putra
+        </h3>
+
+        <div class="space-y-2 text-xs">
+          <div id="bracket_Putra_SF1" class="p-2.5 bg-slate-950 border border-slate-800 rounded-xl flex justify-between items-center">
+            <div>
+              <span class="text-[10px] text-slate-500 font-bold block">SEMI FINAL 1 (PUTRA)</span>
+              <span id="txt_Putra_SF1" class="font-bold text-white">Tim Putra A vs Tim Putra B</span>
+            </div>
+            <span id="badge_Putra_SF1" class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-800 text-slate-500">Belum Main</span>
+          </div>
+          <div id="bracket_Putra_SF2" class="p-2.5 bg-slate-950 border border-slate-800 rounded-xl flex justify-between items-center">
+            <div>
+              <span class="text-[10px] text-slate-500 font-bold block">SEMI FINAL 2 (PUTRA)</span>
+              <span id="txt_Putra_SF2" class="font-bold text-white">Tim Putra C vs Tim Putra D</span>
+            </div>
+            <span id="badge_Putra_SF2" class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-800 text-slate-500">Belum Main</span>
+          </div>
+          <div id="bracket_Putra_FINAL" class="p-2.5 bg-gradient-to-r from-blue-950/30 to-slate-950 border border-blue-500/30 rounded-xl flex justify-between items-center">
+            <div>
+              <span class="text-[10px] text-blue-400 font-bold block">GRAN FINAL (PUTRA)</span>
+              <span id="txt_Putra_FINAL" class="font-bold text-white">Pemenang SF1 vs Pemenang SF2</span>
+            </div>
+            <i data-lucide="award" class="w-4 h-4 text-blue-400"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- BAGAN TURNAMEN PUTRI -->
+      <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl space-y-3">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-pink-400 flex items-center gap-1.5">
+          <i data-lucide="trophy" class="w-3.5 h-3.5 text-pink-400"></i> Bagan Turnamen Putri
+        </h3>
+
+        <div class="space-y-2 text-xs">
+          <div id="bracket_Putri_SF1" class="p-2.5 bg-slate-950 border border-slate-800 rounded-xl flex justify-between items-center">
+            <div>
+              <span class="text-[10px] text-slate-500 font-bold block">SEMI FINAL 1 (PUTRI)</span>
+              <span id="txt_Putri_SF1" class="font-bold text-white">Tim Putri A vs Tim Putri B</span>
+            </div>
+            <span id="badge_Putri_SF1" class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-800 text-slate-500">Belum Main</span>
+          </div>
+          <div id="bracket_Putri_SF2" class="p-2.5 bg-slate-950 border border-slate-800 rounded-xl flex justify-between items-center">
+            <div>
+              <span class="text-[10px] text-slate-500 font-bold block">SEMI FINAL 2 (PUTRI)</span>
+              <span id="txt_Putri_SF2" class="font-bold text-white">Tim Putri C vs Tim Putri D</span>
+            </div>
+            <span id="badge_Putri_SF2" class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-800 text-slate-500">Belum Main</span>
+          </div>
+          <div id="bracket_Putri_FINAL" class="p-2.5 bg-gradient-to-r from-pink-950/30 to-slate-950 border border-pink-500/30 rounded-xl flex justify-between items-center">
+            <div>
+              <span class="text-[10px] text-pink-400 font-bold block">GRAN FINAL (PUTRI)</span>
+              <span id="txt_Putri_FINAL" class="font-bold text-white">Pemenang SF1 vs Pemenang SF2</span>
+            </div>
+            <i data-lucide="award" class="w-4 h-4 text-pink-400"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Top Scorer Board -->
+      <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl space-y-3">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+          <i data-lucide="award" class="w-3.5 h-3.5 text-amber-500"></i> Sepatu Emas (Top Scorer)
+        </h3>
+        <div id="topScorerList" class="space-y-1.5 text-xs">
+          <p class="text-slate-600 italic text-center py-2">Data gol akan muncul di sini</p>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Admin Modal -->
+  <div id="adminModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 w-full max-w-sm rounded-2xl p-5 space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="text-sm font-bold text-white flex items-center gap-1.5">
+          <i data-lucide="sliders" class="w-4 h-4 text-brand-500"></i> Panel Kontrol Admin
+        </h3>
+        <button onclick="toggleAdminModal()" class="text-slate-500 hover:text-white"><i data-lucide="x" class="w-4 h-4"></i></button>
+      </div>
+
+      <!-- PIN Input View -->
+      <div id="adminAuthView" class="space-y-3">
+        <label class="block text-xs text-slate-400">Masukkan PIN Admin</label>
+        <input type="password" id="adminPinInput" placeholder="••••" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-center text-lg font-bold tracking-widest text-white focus:outline-none focus:border-brand-500">
+        <button onclick="verifyAdminPin()" class="w-full py-2.5 bg-brand-500 text-white font-bold text-xs rounded-xl">Masuk</button>
+      </div>
+
+      <!-- Admin Controls View -->
+      <div id="adminControlView" class="hidden space-y-4 text-xs">
+        
+        <!-- START / STOP MATCH CONTROLLER -->
+        <div class="space-y-2 bg-slate-950 p-3 border border-slate-800 rounded-xl">
+          <label class="font-bold text-amber-400 block">Status Pertandingan Pertandingan:</label>
+          <div class="grid grid-cols-2 gap-2">
+            <select id="adminCategory" class="bg-slate-900 border border-slate-800 rounded-lg p-2 text-white">
+              <option value="Putra">Putra</option>
+              <option value="Putri">Putri</option>
+            </select>
+            <select id="adminRound" class="bg-slate-900 border border-slate-800 rounded-lg p-2 text-white">
+              <option value="SF1">Semi Final 1</option>
+              <option value="SF2">Semi Final 2</option>
+              <option value="FINAL">Gran Final</option>
+            </select>
+          </div>
+          <div class="grid grid-cols-2 gap-2 pt-1">
+            <button onclick="startMatch()" class="py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-lg flex items-center justify-center gap-1">🟢 Start Match</button>
+            <button onclick="finishMatch()" class="py-2 bg-red-600 hover:bg-red-500 text-white font-bold rounded-lg flex items-center justify-center gap-1">🔴 Selesai Match</button>
+          </div>
+        </div>
+
+        <!-- Goal Controller -->
+        <div class="space-y-2 border-t border-slate-800 pt-3">
+          <label class="font-bold text-slate-300 block">Tambah Gol Match Berjalan:</label>
+          <div class="grid grid-cols-2 gap-2">
+            <button onclick="addGoal(1)" class="p-2.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg font-bold text-brand-400 flex items-center justify-center gap-1">⚽ + Gol Tim Kiri</button>
+            <button onclick="addGoal(2)" class="p-2.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg font-bold text-brand-400 flex items-center justify-center gap-1">⚽ + Gol Tim Kanan</button>
+          </div>
+        </div>
+
+        <!-- Custom Team Names -->
+        <div class="space-y-2 border-t border-slate-800 pt-3">
+          <label class="font-bold text-slate-300 block">Ubah Nama Tim:</label>
+          <p class="text-[10px] text-slate-500">Nama Tim Putra (A/B/C/D) & Putri (A/B/C/D)</p>
+          <div class="grid grid-cols-2 gap-1.5">
+            <input type="text" id="tPutraA" value="Tim Putra A" onchange="saveTeamNames()" class="bg-slate-950 border border-slate-800 rounded-lg p-1.5 text-white">
+            <input type="text" id="tPutraB" value="Tim Putra B" onchange="saveTeamNames()" class="bg-slate-950 border border-slate-800 rounded-lg p-1.5 text-white">
+            <input type="text" id="tPutraC" value="Tim Putra C" onchange="saveTeamNames()" class="bg-slate-950 border border-slate-800 rounded-lg p-1.5 text-white">
+            <input type="text" id="tPutraD" value="Tim Putra D" onchange="saveTeamNames()" class="bg-slate-950 border border-slate-800 rounded-lg p-1.5 text-white">
+          </div>
+        </div>
+
+        <!-- Reset Button -->
+        <div class="border-t border-slate-800 pt-3">
+          <button onclick="resetMatchData()" class="w-full py-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 rounded-lg font-bold">Reset Semua Data Tournament</button>
+        </div>
+
+        <button onclick="toggleAdminModal()" class="w-full py-2 bg-slate-800 text-slate-400 font-semibold rounded-lg mt-2">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 1. Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyAg6aeLdlFFdjZQuuxxl4iRKu0CUdOyD04",
+      authDomain: "funmatch-kkg.firebaseapp.com",
+      databaseURL: "https://funmatch-kkg-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "funmatch-kkg",
+      storageBucket: "funmatch-kkg.firebasestorage.app",
+      messagingSenderId: "169552339719",
+      appId: "1:169552339719:web:1688769afe99028fa45ba2",
+      measurementId: "G-F5S1VNQ4PS"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // App State
+    let selectedTeamCategory = 'Putra';
+    let playersData = {};
+    let teamNames = {
+      Putra: ["Tim Putra A", "Tim Putra B", "Tim Putra C", "Tim Putra D"],
+      Putri: ["Tim Putri A", "Tim Putri B", "Tim Putri C", "Tim Putri D"]
+    };
+    let activeMatch = null; // null if no match live
+    let bracketWinners = { Putra: {}, Putri: {} };
+
+    lucide.createIcons();
+
+    // 2. Realtime Database Listeners
+    db.ref('teams').on('value', snapshot => {
+      const data = snapshot.val();
+      if (data) {
+        teamNames = data;
+        document.getElementById('tPutraA').value = teamNames.Putra?.[0] || "Tim Putra A";
+        document.getElementById('tPutraB').value = teamNames.Putra?.[1] || "Tim Putra B";
+        document.getElementById('tPutraC').value = teamNames.Putra?.[2] || "Tim Putra C";
+        document.getElementById('tPutraD').value = teamNames.Putra?.[3] || "Tim Putra D";
+        renderBrackets();
+        renderTeamsView();
+      }
+    });
+
+    db.ref('activeMatch').on('value', snapshot => {
+      activeMatch = snapshot.val();
+      const board = document.getElementById('liveScoreBoard');
+      const banner = document.getElementById('noMatchBanner');
+
+      if (activeMatch && activeMatch.isLive) {
+        board.classList.remove('hidden');
+        banner.classList.add('hidden');
+
+        document.getElementById('matchRoundTitle').innerText = `${activeMatch.category} - ${activeMatch.roundName}`;
+        document.getElementById('team1Display').innerText = activeMatch.team1;
+        document.getElementById('team2Display').innerText = activeMatch.team2;
+        document.getElementById('score1Display').innerText = activeMatch.score1 || 0;
+        document.getElementById('score2Display').innerText = activeMatch.score2 || 0;
+      } else {
+        board.classList.add('hidden');
+        banner.classList.remove('hidden');
+      }
+      renderBrackets();
+    });
+
+    db.ref('bracketWinners').on('value', snapshot => {
+      bracketWinners = snapshot.val() || { Putra: {}, Putri: {} };
+      renderBrackets();
+    });
+
+    db.ref('players').on('value', snapshot => {
+      playersData = snapshot.val() || {};
+      const list = Object.values(playersData);
+      document.getElementById('totalPlayerBadge').innerText = `${list.length} Peserta`;
+      renderTeamsView();
+    });
+
+    db.ref('goals').on('value', snapshot => {
+      const goalsData = snapshot.val() || {};
+      const goalsList = Object.values(goalsData);
+      const logContainer = document.getElementById('goalLog');
+      
+      if (goalsList.length === 0) {
+        logContainer.innerHTML = '<p class="text-center italic text-slate-600">Belum ada gol tercipta</p>';
+      } else {
+        logContainer.innerHTML = goalsList.map(g => `<p>⚽ <b>${g.scorer}</b> (${g.team})</p>`).join('');
+      }
+
+      const scorers = {};
+      goalsList.forEach(g => {
+        scorers[g.scorer] = (scorers[g.scorer] || 0) + 1;
+      });
+      const sorted = Object.entries(scorers).sort((a,b) => b[1] - a[1]);
+      const topContainer = document.getElementById('topScorerList');
+      if (sorted.length === 0) {
+        topContainer.innerHTML = '<p class="text-slate-600 italic text-center py-2">Data gol akan muncul di sini</p>';
+      } else {
+        topContainer.innerHTML = sorted.map(([name, count], idx) => `
+          <div class="flex justify-between items-center p-2 bg-slate-950 border border-slate-800 rounded-lg">
+            <span>${idx === 0 ? '👑' : '⚽'} <b>${name}</b></span>
+            <span class="font-bold text-amber-400">${count} Gol</span>
+          </div>
+        `).join('');
+      }
+    });
+
+    // Render Both Brackets (Putra & Putri)
+    function renderBrackets() {
+      const p = teamNames.Putra || ["Tim A", "Tim B", "Tim C", "Tim D"];
+      const wP = bracketWinners.Putra || {};
+
+      document.getElementById('txt_Putra_SF1').innerText = `${p[0]} vs ${p[1]}`;
+      document.getElementById('txt_Putra_SF2').innerText = `${p[2]} vs ${p[3]}`;
+      document.getElementById('txt_Putra_FINAL').innerText = `${wP.SF1 || 'Pemenang SF1'} vs ${wP.SF2 || 'Pemenang SF2'}`;
+
+      const pt = teamNames.Putri || ["Tim A", "Tim B", "Tim C", "Tim D"];
+      const wPt = bracketWinners.Putri || {};
+
+      document.getElementById('txt_Putri_SF1').innerText = `${pt[0]} vs ${pt[1]}`;
+      document.getElementById('txt_Putri_SF2').innerText = `${pt[2]} vs ${pt[3]}`;
+      document.getElementById('txt_Putri_FINAL').innerText = `${wPt.SF1 || 'Pemenang SF1'} vs ${wPt.SF2 || 'Pemenang SF2'}`;
+
+      // Reset Badge Statuses
+      updateBadge('Putra', 'SF1', wP.SF1);
+      updateBadge('Putra', 'SF2', wP.SF2);
+      updateBadge('Putra', 'FINAL', wP.FINAL);
+
+      updateBadge('Putri', 'SF1', wPt.SF1);
+      updateBadge('Putri', 'SF2', wPt.SF2);
+      updateBadge('Putri', 'FINAL', wPt.FINAL);
+    }
+
+    function updateBadge(cat, round, winner) {
+      const badge = document.getElementById(`badge_${cat}_${round}`);
+      if (!badge) return;
+
+      if (activeMatch && activeMatch.isLive && activeMatch.category === cat && activeMatch.round === round) {
+        badge.className = "px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/10 text-amber-400 animate-pulse";
+        badge.innerText = "LIVE MATCH";
+      } else if (winner) {
+        badge.className = "px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-400";
+        badge.innerText = `Menang: ${winner}`;
+      } else {
+        badge.className = "px-2 py-0.5 rounded text-[10px] font-bold bg-slate-800 text-slate-500";
+        badge.innerText = "Belum Main";
+      }
+    }
+
+    // Filter Skuad Category
+    function filterCategory(cat) {
+      selectedTeamCategory = cat;
+      const pBtn = document.getElementById('catPutraBtn');
+      const ptBtn = document.getElementById('catPutriBtn');
+
+      if (cat === 'Putra') {
+        pBtn.className = "py-2 rounded-lg bg-blue-500/20 text-blue-400 border border-blue-500/30";
+        ptBtn.className = "py-2 rounded-lg text-slate-400 hover:text-white";
+      } else {
+        ptBtn.className = "py-2 rounded-lg bg-pink-500/20 text-pink-400 border border-pink-500/30";
+        pBtn.className = "py-2 rounded-lg text-slate-400 hover:text-white";
+      }
+      renderTeamsView();
+    }
+
+    // Render Skuad Tim View (Maksimal 6-8 Orang Per Tim Amatir)
+    function renderTeamsView() {
+      const container = document.getElementById('teamsContainer');
+      const playerList = Object.values(playersData).filter(p => p.gender === selectedTeamCategory);
+      const names = teamNames[selectedTeamCategory] || ["Tim A", "Tim B", "Tim C", "Tim D"];
+
+      container.innerHTML = names.map((tName, idx) => {
+        // Auto assignment limit ~8 player per team
+        const members = playerList.filter((p, pIdx) => (pIdx % 4) === idx);
+
+        return `
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+              <h3 class="font-black text-sm ${selectedTeamCategory === 'Putra' ? 'text-blue-400' : 'text-pink-400'}">${tName}</h3>
+              <span class="text-[10px] font-bold px-2 py-0.5 bg-slate-950 text-slate-400 rounded-md border border-slate-800">${members.length}/8 Pemain</span>
+            </div>
+            <div class="space-y-1.5">
+              ${members.length === 0 ? '<p class="text-xs text-slate-600 italic py-1">Belum ada pemain terdaftar</p>' : members.map((m, mIdx) => `
+                <div class="flex justify-between items-center bg-slate-950 p-2 rounded-xl text-xs border border-slate-800/80">
+                  <div class="flex items-center gap-2">
+                    <span class="text-[10px] text-slate-600 font-bold w-4">${mIdx + 1}.</span>
+                    <div>
+                      <span class="font-bold text-white block">${m.name}</span>
+                      <span class="text-[10px] text-slate-500">${m.school}</span>
+                    </div>
+                  </div>
+                  <span class="text-[9px] text-slate-500 font-semibold">${mIdx < 5 ? 'Utama' : 'Cadangan'}</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Start & Finish Match Controls
+    function startMatch() {
+      const cat = document.getElementById('adminCategory').value;
+      const round = document.getElementById('adminRound').value;
+      const names = teamNames[cat] || ["Tim A", "Tim B", "Tim C", "Tim D"];
+      const w = bracketWinners[cat] || {};
+
+      let t1 = names[0], t2 = names[1];
+      let rName = "Semi Final 1";
+
+      if (round === 'SF2') {
+        t1 = names[2]; t2 = names[3]; rName = "Semi Final 2";
+      } else if (round === 'FINAL') {
+        t1 = w.SF1 || 'Pemenang SF1';
+        t2 = w.SF2 || 'Pemenang SF2';
+        rName = "GRAN FINAL";
+      }
+
+      db.ref('activeMatch').set({
+        isLive: true,
+        category: cat,
+        round: round,
+        roundName: rName,
+        team1: t1,
+        team2: t2,
+        score1: 0,
+        score2: 0
+      });
+
+      alert(`Pertandingan ${cat} - ${rName} DIMULAI! Papan skor live sekarang muncul.`);
+    }
+
+    function finishMatch() {
+      if (!activeMatch || !activeMatch.isLive) {
+        alert("Tidak ada match yang sedang berjalan!");
+        return;
+      }
+
+      const winnerName = prompt(`Masukkan nama Tim Pemenang (${activeMatch.team1} vs ${activeMatch.team2}):`, activeMatch.score1 >= activeMatch.score2 ? activeMatch.team1 : activeMatch.team2);
+
+      if (winnerName) {
+        db.ref(`bracketWinners/${activeMatch.category}/${activeMatch.round}`).set(winnerName);
+        db.ref('activeMatch').set({ isLive: false });
+        alert(`Match Selesai! Pemenang: ${winnerName}. Bagan otomatis di-update.`);
+      }
+    }
+
+    function addGoal(teamNum) {
+      if (!activeMatch || !activeMatch.isLive) {
+        alert("Mulai pertandingan dulu di Panel Admin!");
+        return;
+      }
+
+      db.ref('activeMatch').once('value', snapshot => {
+        const m = snapshot.val();
+        if (teamNum === 1) m.score1 = (m.score1 || 0) + 1;
+        if (teamNum === 2) m.score2 = (m.score2 || 0) + 1;
+        db.ref('activeMatch').set(m);
+
+        const scorer = prompt("Nama pencetak gol:") || "Pemain";
+        const teamName = teamNum === 1 ? m.team1 : m.team2;
+        db.ref('goals').push({ scorer, team: teamName, timestamp: Date.now() });
+      });
+    }
+
+    // Tab Switcher
+    function switchTab(tab) {
+      const regView = document.getElementById('viewReg');
+      const teamsView = document.getElementById('viewTeams');
+      const dashView = document.getElementById('viewDash');
+
+      const regBtn = document.getElementById('tabRegBtn');
+      const teamsBtn = document.getElementById('tabTeamsBtn');
+      const dashBtn = document.getElementById('tabDashBtn');
+
+      regView.classList.add('hidden');
+      teamsView.classList.add('hidden');
+      dashView.classList.add('hidden');
+
+      regBtn.className = "py-2.5 rounded-lg text-slate-400 hover:text-white transition-all flex items-center justify-center gap-1";
+      teamsBtn.className = "py-2.5 rounded-lg text-slate-400 hover:text-white transition-all flex items-center justify-center gap-1";
+      dashBtn.className = "py-2.5 rounded-lg text-slate-400 hover:text-white transition-all flex items-center justify-center gap-1";
+
+      if (tab === 'reg') {
+        regView.classList.remove('hidden');
+        regBtn.className = "py-2.5 rounded-lg bg-brand-500 text-white transition-all flex items-center justify-center gap-1 shadow-md";
+      } else if (tab === 'teams') {
+        teamsView.classList.remove('hidden');
+        teamsBtn.className = "py-2.5 rounded-lg bg-brand-500 text-white transition-all flex items-center justify-center gap-1 shadow-md";
+        lucide.createIcons();
+      } else {
+        dashView.classList.remove('hidden');
+        dashBtn.className = "py-2.5 rounded-lg bg-brand-500 text-white transition-all flex items-center justify-center gap-1 shadow-md";
+        lucide.createIcons();
+      }
+    }
+
+    function handleRegistration(e) {
+      e.preventDefault();
+      const name = document.getElementById('inputName').value;
+      const school = document.getElementById('inputSchool').value;
+      const gender = document.querySelector('input[name="gender"]:checked').value;
+
+      const categoryList = Object.values(playersData).filter(p => p.gender === gender);
+      const assignedTeamIndex = categoryList.length % 4;
+      const assignedTeam = (teamNames[gender] || [])[assignedTeamIndex] || `Tim ${gender} ${assignedTeamIndex + 1}`;
+
+      db.ref('players').push({ name, school, gender, team: assignedTeam, timestamp: Date.now() });
+
+      document.getElementById('regForm').classList.add('hidden');
+      document.getElementById('resultCard').classList.remove('hidden');
+      document.getElementById('resPlayerName').innerText = name;
+      document.getElementById('resPlayerMeta').innerText = `${school} • Kategori ${gender}`;
+      document.getElementById('resTeamName').innerText = assignedTeam;
+    }
+
+    function resetFormView() {
+      document.getElementById('regForm').reset();
+      document.getElementById('regForm').classList.remove('hidden');
+      document.getElementById('resultCard').classList.add('hidden');
+    }
+
+    function toggleAdminModal() {
+      document.getElementById('adminModal').classList.toggle('hidden');
+    }
+
+    function verifyAdminPin() {
+      const pin = document.getElementById('adminPinInput').value;
+      if (pin === '1234') {
+        document.getElementById('adminAuthView').classList.add('hidden');
+        document.getElementById('adminControlView').classList.remove('hidden');
+      } else {
+        alert('PIN Admin Salah!');
+      }
+    }
+
+    function saveTeamNames() {
+      const updated = {
+        Putra: [
+          document.getElementById('tPutraA').value,
+          document.getElementById('tPutraB').value,
+          document.getElementById('tPutraC').value,
+          document.getElementById('tPutraD').value
+        ],
+        Putri: ["Tim Putri A", "Tim Putri B", "Tim Putri C", "Tim Putri D"]
+      };
+      db.ref('teams').set(updated);
+    }
+
+    function resetMatchData() {
+      if (confirm("Yakin ingin menghapus seluruh data skor, bagan, & peserta?")) {
+        db.ref('activeMatch').remove();
+        db.ref('bracketWinners').remove();
+        db.ref('goals').remove();
+        db.ref('players').remove();
+        alert("Seluruh data turnamen berhasil di-reset!");
+      }
+    }
+  </script>
+</body>
+</html>
